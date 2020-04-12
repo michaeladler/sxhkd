@@ -265,6 +265,11 @@ void setup(void)
 	symbols = xcb_key_symbols_alloc(dpy);
 	hotkeys_head = hotkeys_tail = NULL;
 	progress[0] = '\0';
+
+#ifdef WITH_LUA
+  L = luaL_newstate();
+  luaL_openlibs(L);
+#endif
 }
 
 void cleanup(void)
@@ -279,6 +284,10 @@ void cleanup(void)
 		hk = next;
 	}
 	hotkeys_head = hotkeys_tail = NULL;
+
+#ifdef WITH_LUA
+  lua_close(L);
+#endif
 }
 
 void reload_cmd(void)

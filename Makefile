@@ -12,6 +12,11 @@ BINPREFIX ?= $(PREFIX)/bin
 MANPREFIX ?= $(PREFIX)/share/man
 DOCPREFIX ?= $(PREFIX)/share/doc/$(OUT)
 
+ifdef WITH_LUA
+CFLAGS   += -I/usr/include/luajit-2.1 -DWITH_LUA
+LDLIBS	 += -rdynamic -lluajit-5.1
+endif
+
 all: $(OUT)
 
 debug: CFLAGS += -O0 -g

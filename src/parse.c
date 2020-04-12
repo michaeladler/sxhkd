@@ -2367,6 +2367,14 @@ keysym_dict_t nks_dict[] = {/*{{{*/
 
 void load_config(const char *config_file)
 {
+#ifdef WITH_LUA
+  const char *dot = strrchr(config_file, '.');
+  if(dot != NULL && strncmp("lua", dot+1, 3) == 0) {
+    load_lua_config(config_file);
+    return;
+  }
+#endif
+
 	PRINTF("load configuration '%s'\n", config_file);
 	FILE *cfg = fopen(config_file, "r");
 	if (cfg == NULL)
@@ -2411,6 +2419,17 @@ void load_config(const char *config_file)
 
 	fclose(cfg);
 }
+
+#ifdef WITH_LUA
+void load_lua_config(const char *filename) {
+	PRINTF("load Lua configuration '%s'\n", filename);
+  luaL_loadfile(L, filename);
+  if (lua_pcall(L, 0, 0, 0)) {
+    err("Error loading external Lua script %s: %s\n", filename,
+        lua_tostring(L, -1));
+  }
+}
+#endif
 
 void parse_event(xcb_generic_event_t *evt, uint8_t event_type, xcb_keysym_t *keysym, xcb_button_t *button, uint16_t *modfield)
 {

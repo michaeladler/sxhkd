@@ -46,6 +46,14 @@ xcb_connection_t *dpy;
 xcb_window_t root;
 xcb_key_symbols_t *symbols;
 
+#ifdef WITH_LUA
+#include <lauxlib.h>
+#include <lua.h>
+#include <lualib.h>
+
+lua_State *L;
+#endif
+
 char *shell;
 char config_file[MAXLEN];
 char *config_path;
